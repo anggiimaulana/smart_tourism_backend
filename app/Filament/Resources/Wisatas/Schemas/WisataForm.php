@@ -18,23 +18,33 @@ class WisataForm
                     ->required()
                     ->default('uuid_generate_v4()'),
                 TextInput::make('kode')
-                    ->required(),
+                    ->required()
+                    ->placeholder('Contoh: WIS-IDM-001'),
                 TextInput::make('nama')
-                    ->required(),
+                    ->required()
+                    ->placeholder('Contoh: Pantai Plentong'),
                 TextInput::make('wilayah')
-                    ->required(),
-                TextInput::make('kecamatan'),
+                    ->required()
+                    ->placeholder('Contoh: Indramayu'),
+                TextInput::make('kecamatan')
+                    ->placeholder('Contoh: Sukra'),
                 Textarea::make('alamat_lengkap')
                     ->columnSpanFull(),
                 TextInput::make('latitude')
-                    ->numeric(),
+                    ->numeric()
+                    ->placeholder('Contoh: -6.123456'),
                 TextInput::make('longitude')
-                    ->numeric(),
-                TextInput::make('kategori_utama'),
-                TextInput::make('sub_kategori'),
-                TextInput::make('jenis_tempat'),
+                    ->numeric()
+                    ->placeholder('Contoh: 108.123456'),
+                TextInput::make('kategori_utama')
+                    ->placeholder('Contoh: Alam / Buatan / Budaya'),
+                TextInput::make('sub_kategori')
+                    ->placeholder('Contoh: Pantai / Museum'),
+                TextInput::make('jenis_tempat')
+                    ->placeholder('Contoh: Wisata Alam'),
                 Textarea::make('deskripsi')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->placeholder('Masukkan deskripsi lengkap mengenai tempat wisata ini...'),
                 TextInput::make('harga_tiket_min')
                     ->numeric()
                     ->default(0),

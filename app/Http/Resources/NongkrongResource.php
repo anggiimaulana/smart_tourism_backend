@@ -52,6 +52,14 @@ class NongkrongResource extends JsonResource
             'kontak'            => $this->when($isDetail, $this->kontak),
             'catatan'           => $this->when($isDetail, $this->catatan),
             'status'            => $this->status,
+
+            // Wisata referensi — hanya load jika sudah di-eager-load
+            'wisata_referensi'  => $this->when(
+                $isDetail && $this->relationLoaded('wisataRef'),
+                fn() => $this->wisataRef
+                    ? ['kode' => $this->wisataRef->kode, 'nama' => $this->wisataRef->nama]
+                    : null
+            ),
         ];
     }
 }

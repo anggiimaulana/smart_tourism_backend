@@ -14,19 +14,24 @@ class UserForm
         return $schema
             ->components([
                 TextInput::make('nama')
-                    ->required(),
+                    ->required()
+                    ->placeholder('Contoh: Budi Santoso'),
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->placeholder('Contoh: budi@example.com'),
                 Textarea::make('password_hash')
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->placeholder('Masukkan hash password (bcrypt)'),
                 TextInput::make('role')
                     ->required()
-                    ->default('pengunjung'),
+                    ->default('pengunjung')
+                    ->placeholder('Contoh: admin / pengunjung'),
                 Textarea::make('avatar_url')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->placeholder('Contoh: https://example.com/avatar.jpg'),
                 Toggle::make('is_active')
                     ->required(),
             ]);

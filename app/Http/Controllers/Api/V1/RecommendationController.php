@@ -19,7 +19,12 @@ class RecommendationController extends BaseApiController
 
         // Inject user_id dari token jika login
         if ($request->user()) {
-            $payload['user_id'] = $request->user()->id;
+            $payload['user_id'] = (string) $request->user()->id;
+        }
+
+        // Mapping ke field FastAPI
+        if (isset($payload['limit'])) {
+            $payload['jumlah'] = $payload['limit'];
         }
 
         $result = $this->proxy->post('/api/v1/recommendation/', $payload);
@@ -28,24 +33,54 @@ class RecommendationController extends BaseApiController
 
     public function planning(PlanningRequest $request): JsonResponse
     {
-        $result = $this->proxy->post('/api/v1/recommendation/planning', $request->validated());
+        $data = $request->validated();
+        
+        // Mapping ke field FastAPI
+        $payload = [
+            'wilayah'          => $data['wilayah'],
+            'jumlah_hari'      => $data['jumlah_hari'],
+            'jumlah_orang'     => $data['jumlah_orang'] ?? 1,
+            'budget_total'     => isset($data['budget']) ? (int) $data['budget'] : null,
+            'preferensi'       => $data['kategori_preferensi'] ?? null,
+            'tanggal_mulai'    => $data['tanggal_mulai'] ?? null,
+            'catatan_tambahan' => $data['catatan'] ?? null,
+        ];
+
+        if ($request->user()) {
+            $payload['user_id'] = (string) $request->user()->id;
+        }
+
+        $result = $this->proxy->post('/api/v1/recommendation/planning', $payload);
         return $this->success($result);
     }
 
     public function trackHistory(Request $request): JsonResponse
     {
-        $request->validate([
-            'tipe_tempat' => 'required|string|in:wisata,kuliner,nongkrong',
-            'tempat_kode' => 'required|string|max:20',
-            'aksi'        => 'required|string|in:klik,kunjungan,simpan,rating',
-            'rating_user' => 'nullable|numeric|min:1|max:5',
+        $data = $request->validate([
+            'tipe_tempat'  => 'required|string|in:wisata,kuliner,nongkrong',
+            'tempat_kode'  => 'required|string|max:20',
+            'aksi'         => 'required|string|in:klik,kunjungi,simpan,rating,share',
+            'nilai_rating' => 'nullable|numeric|min:1|max:5',
+            'durasi_detik' => 'nullable|integer|min:0',
         ]);
 
-        $this->proxy->post('/api/v1/recommendation/history', array_merge(
-            $request->only('tipe_tempat', 'tempat_kode', 'aksi', 'rating_user'),
-            ['user_id' => $request->user()->id]
-        ));
+        $this->proxy->post('/api/v1/recommendation/history', array_merge($data, [
+            'user_id' => (string) $request->user()->id
+        ]));
 
-        return $this->success(null, 'Riwayat berhasil disimpan.');
+        return $this->success($data, 'Riwayat berhasil disimpan.');
+    }
+
+    /**
+     * Lihat daftar riwayat aktivitas user (verifikasi)
+     */
+    public function getHistory(Request $request): JsonResponse
+    {
+        $history = \App\Models\UserHistory::where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        return $this->success($history, 'Daftar riwayat aktivitas Anda.');
     }
 }

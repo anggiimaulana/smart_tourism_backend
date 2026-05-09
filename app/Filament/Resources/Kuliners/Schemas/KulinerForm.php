@@ -18,21 +18,30 @@ class KulinerForm
                     ->required()
                     ->default('uuid_generate_v4()'),
                 TextInput::make('kode')
-                    ->required(),
-                TextInput::make('id_wisata_terdekat'),
+                    ->required()
+                    ->placeholder('Contoh: KUL-IDM-001'),
+                TextInput::make('id_wisata_terdekat')
+                    ->placeholder('Kode Wisata Terdekat (Opsional)'),
                 TextInput::make('nama')
-                    ->required(),
+                    ->required()
+                    ->placeholder('Contoh: Empal Gentong H. Apud'),
                 TextInput::make('wilayah')
-                    ->required(),
-                TextInput::make('kecamatan'),
+                    ->required()
+                    ->placeholder('Contoh: Cirebon'),
+                TextInput::make('kecamatan')
+                    ->placeholder('Contoh: Tengah Tani'),
                 Textarea::make('alamat_lengkap')
                     ->columnSpanFull(),
                 TextInput::make('latitude')
-                    ->numeric(),
+                    ->numeric()
+                    ->placeholder('Contoh: -6.712345'),
                 TextInput::make('longitude')
-                    ->numeric(),
-                TextInput::make('jenis_tempat'),
-                TextInput::make('kategori_menu_utama'),
+                    ->numeric()
+                    ->placeholder('Contoh: 108.512345'),
+                TextInput::make('jenis_tempat')
+                    ->placeholder('Contoh: Restoran / Rumah Makan / Cafe'),
+                TextInput::make('kategori_menu_utama')
+                    ->placeholder('Contoh: Olahan Daging / Seafood / Tradisional'),
                 Textarea::make('menu_unggulan')
                     ->columnSpanFull(),
                 Toggle::make('makanan_khas_daerah'),

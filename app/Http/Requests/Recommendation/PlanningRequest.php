@@ -13,17 +13,26 @@ class PlanningRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('wilayah') && is_array($this->wilayah)) {
+            $this->merge([
+                'wilayah' => array_map(fn($w) => ucfirst(strtolower($w)), $this->wilayah)
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
-            'jumlah_hari'    => 'required|integer|min:1|max:7',
-            'wilayah'        => 'required|array|min:1',
-            'wilayah.*'      => 'string|in:Cirebon,Indramayu,Majalengka,Kuningan',
-            'preferensi'     => 'nullable|array',
-            'preferensi.*'   => 'string|max:50',
-            'budget'         => 'nullable|string|in:murah,sedang,mahal',
-            'latitude'       => 'nullable|numeric|between:-90,90',
-            'longitude'      => 'nullable|numeric|between:-180,180',
+            'jumlah_hari'           => 'required|integer|min:1|max:14',
+            'wilayah'               => 'required|array|min:1',
+            'wilayah.*'             => 'string|in:Cirebon,Indramayu,Majalengka,Kuningan',
+            'kategori_preferensi'   => 'nullable|array',
+            'kategori_preferensi.*' => 'string|max:50',
+            'budget'                => 'nullable', // Flexible: can be numeric or string
+            'latitude'              => 'nullable|numeric|between:-90,90',
+            'longitude'             => 'nullable|numeric|between:-180,180',
         ];
     }
 

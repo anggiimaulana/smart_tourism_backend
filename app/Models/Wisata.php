@@ -117,4 +117,10 @@ class Wisata extends Model
         // Kuliner yang berelasi ke wisata ini via id_wisata_terdekat
         return $this->hasMany(Kuliner::class, 'id_wisata_terdekat', 'kode');
     }
+
+    public function nongkrongs(): HasMany
+    {
+        // Nongkrong yang berelasi ke wisata ini via id_wisata_ref
+        return $this->hasMany(Nongkrong::class, 'id_wisata_ref', 'kode');
+    }
 }

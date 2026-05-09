@@ -16,7 +16,8 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('ID'),
+                    ->label('ID')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('nama')
                     ->searchable(),
                 TextColumn::make('email')

@@ -3,48 +3,58 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\BaseApiController;
-use App\Services\FastApiProxyService;
+use App\Services\SentimentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SentimentController extends BaseApiController
 {
-    public function __construct(private readonly FastApiProxyService $proxy) {}
+    public function __construct(private readonly SentimentService $service) {}
 
     /**
      * Ringkasan sentimen per wilayah — publik
      * GET /api/v1/sentiment/summary/{wilayah}
      */
-    public function summary(string $wilayah): JsonResponse
+    public function summary(string $wilayah, Request $request): JsonResponse
     {
-        // Validasi wilayah
+        $wilayah = ucfirst(strtolower($wilayah));
+
         if (! in_array($wilayah, config('smart_tourism.wilayah'))) {
             return $this->error('Wilayah tidak valid.', 422);
         }
 
-        // TODO: proxy ke FastAPI atau query langsung ke sentiment_results
-        $result = $this->proxy->get("/api/v1/sentiment/summary/{$wilayah}");
+        $tipe = $request->query('tipe_tempat', 'all');
+        $result = $this->service->getSummary($wilayah, $tipe);
         return $this->success($result);
     }
 
     /**
-     * Predict sentimen satu teks — admin only
-     * POST /api/v1/admin/sentiment/predict
+     * Ringkasan sentimen semua wilayah
+     * GET /api/v1/sentiment/summary-all
      */
-    public function predict(Request $request): JsonResponse
+    public function summaryAll(): JsonResponse
     {
-        $request->validate([
-            'teks'       => 'required|string|min:3|max:1000',
-            'model_used' => 'nullable|string|in:indobert,naive_bayes,svm,decision_tree',
-        ]);
-
-        // TODO: proxy ke FastAPI /api/v1/sentiment/predict
-        $result = $this->proxy->post('/api/v1/sentiment/predict', $request->only('teks', 'model_used'));
+        $result = $this->service->getSummaryAll();
         return $this->success($result);
     }
 
     /**
-     * Sync hasil sentimen ke tabel utama — admin only
+     * Detail sentimen per tempat (berdasarkan kode)
+     * GET /api/v1/sentiment/detail/{kode}
+     */
+    public function show(string $kode): JsonResponse
+    {
+        $result = $this->service->getPlaceSummary($kode);
+        
+        if ($result['summary']['total_ulasan'] === 0) {
+            return $this->success(null, 'Data sentimen tidak ditemukan.', 200, [], false);
+        }
+
+        return $this->success($result);
+    }
+
+    /**
+     * Sync hasil sentimen ke tabel utama per tempat — admin only
      * POST /api/v1/admin/sentiment/sync/{tipe}/{kode}
      */
     public function sync(string $tipe, string $kode): JsonResponse
@@ -53,8 +63,17 @@ class SentimentController extends BaseApiController
             return $this->error('Tipe tidak valid.', 422);
         }
 
-        // TODO: proxy ke FastAPI /api/v1/sentiment/sync/{tipe}/{kode}
-        $result = $this->proxy->post("/api/v1/sentiment/sync/{$tipe}/{$kode}");
+        $result = $this->service->syncSentimen($tipe, $kode);
         return $this->success($result, 'Sinkronisasi sentimen berhasil.');
+    }
+
+    /**
+     * Sync massal semua data — admin only
+     * POST /api/v1/admin/sentiment/sync-all
+     */
+    public function syncAll(): JsonResponse
+    {
+        $result = $this->service->syncAll();
+        return $this->success($result, 'Semua data berhasil disinkronisasi.');
     }
 }

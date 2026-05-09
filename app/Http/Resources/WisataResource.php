@@ -95,6 +95,16 @@ class WisataResource extends JsonResource
             ),
 
             'status'            => $this->status,
+
+            // Relasi Kuliner & Nongkrong — hanya load jika sudah di-eager-load
+            'kuliner_terdekat' => $this->when(
+                $request->routeIs('api.v1.wisata.show') && $this->relationLoaded('kuliners'),
+                fn() => KulinerResource::collection($this->kuliners)
+            ),
+            'nongkrong_terdekat' => $this->when(
+                $request->routeIs('api.v1.wisata.show') && $this->relationLoaded('nongkrongs'),
+                fn() => NongkrongResource::collection($this->nongkrongs)
+            ),
         ];
     }
 }

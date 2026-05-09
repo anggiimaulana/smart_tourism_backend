@@ -1,0 +1,670 @@
+{
+	"info": {
+		"_postman_id": "f584e03d-d421-4d1d-91b7-1c3905e3f3b9",
+		"name": "Smart Tourism Ciayumajakuning",
+		"description": "Collection lengkap untuk Backend Laravel (Core) dan FastAPI (AI Engine).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication (Laravel)",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@smarttourism.id\",\r\n    \"password\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/auth/login",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nama\": \"User Baru\",\r\n    \"email\": \"userbaru@gmail.com\",\r\n    \"password\": \"password123\",\r\n    \"password_confirmation\": \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/auth/register",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/auth/me",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Data Publik (Laravel)",
+			"item": [
+				{
+					"name": "List Wisata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/wisata?wilayah=Cirebon",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wisata"
+							],
+							"query": [
+								{
+									"key": "wilayah",
+									"value": "Cirebon"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Detail Wisata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/wisata/WIS-IDM-001",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wisata",
+								"WIS-IDM-001"
+							]
+						}
+					}
+				},
+				{
+					"name": "List Kuliner",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/kuliner?wilayah=Cirebon",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"kuliner"
+							],
+							"query": [
+								{
+									"key": "wilayah",
+									"value": "Cirebon"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Detail Kuliner",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/kuliner/KUL-IDM-001",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"kuliner",
+								"KUL-IDM-001"
+							]
+						}
+					}
+				},
+				{
+					"name": "List Nongkrong",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/nongkrong?wilayah=Cirebon",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"nongkrong"
+							],
+							"query": [
+								{
+									"key": "wilayah",
+									"value": "Cirebon"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Detail Nongkrong",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/nongkrong/NGK-IDM-001",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"nongkrong",
+								"NGK-IDM-001"
+							]
+						}
+					}
+				},
+				{
+					"name": "Global Search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/search?q=pantai",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "pantai"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Sentiment Summary All",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/sentiment/summary-all",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sentiment",
+								"summary-all"
+							]
+						}
+					}
+				},
+				{
+					"name": "Sentiment Summary Wilayah",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/sentiment/summary/Cirebon?tipe_tempat=all",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sentiment",
+								"summary",
+								"Cirebon"
+							],
+							"query": [
+								{
+									"key": "tipe_tempat",
+									"value": "all"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Sentiment Detail (Per Tempat)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/sentiment/detail/WIS-IDM-001",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sentiment",
+								"detail",
+								"WIS-IDM-001"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. AI Endpoints (via Laravel Proxy)",
+			"item": [
+				{
+					"name": "Rekomendasi Wisata",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mode\": \"popular\",\r\n    \"wilayah\": [\"Cirebon\"],\r\n    \"tipe\": \"wisata\",\r\n    \"limit\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/recommendation",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recommendation"
+							]
+						}
+					}
+				},
+				{
+					"name": "Planning Itinerary",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"wilayah\": [\"Cirebon\", \"Indramayu\"],\r\n    \"jumlah_hari\": 2,\r\n    \"budget\": 1000000,\r\n    \"kategori_preferensi\": [\"Alam\", \"Kuliner Khas\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/recommendation/planning",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recommendation",
+								"planning"
+							]
+						}
+					}
+				},
+				{
+					"name": "Track History",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipe_tempat\": \"wisata\",\r\n    \"tempat_kode\": \"WIS-IDM-001\",\r\n    \"aksi\": \"klik\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/recommendation/history",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recommendation",
+								"history"
+							]
+						}
+					}
+				},
+				{
+					"name": "List History (Verify)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/recommendation/history",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"recommendation",
+								"history"
+							]
+						}
+					}
+				},
+				{
+					"name": "Chatbot Ask",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"Rekomendasikan pantai bagus di Indramayu\",\r\n    \"session_token\": \"optional-session-token\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/chatbot/ask",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chatbot",
+								"ask"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Admin Management (Laravel)",
+			"item": [
+				{
+					"name": "Sentiment Sync Single",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/admin/sentiment/sync/wisata/WIS-IDM-001",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"sentiment",
+								"sync",
+								"wisata",
+								"WIS-IDM-001"
+							]
+						}
+					}
+				},
+				{
+					"name": "Sentiment Sync All",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/admin/sentiment/sync-all",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"sentiment",
+								"sync-all"
+							]
+						}
+					}
+				},
+				{
+					"name": "Store Wisata",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{bearer_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nama\": \"Wisata Baru Postman\",\r\n    \"wilayah\": \"Indramayu\",\r\n    \"kategori_utama\": \"Alam\",\r\n    \"deskripsi\": \"Deskripsi wisata baru\",\r\n    \"latitude\": -6.32,\r\n    \"longitude\": 108.32\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{laravel_url}}/api/v1/admin/wisata",
+							"host": [
+								"{{laravel_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"wisata"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "laravel_url",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "fastapi_url",
+			"value": "http://127.0.0.1:8001"
+		},
+		{
+			"key": "bearer_token",
+			"value": "your_token_here"
+		},
+		{
+			"key": "fastapi_secret_key",
+			"value": "shared_secret_key"
+		}
+	]
+}

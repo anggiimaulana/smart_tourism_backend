@@ -14,47 +14,26 @@ Backend ini menerapkan *Layered Architecture* (Controller -> Service -> Reposito
 3. **Database operations bebas dari `SELECT *`** — kolom diseleksi secara spesifik.
 
 ## 🚀 Fitur Utama
-- **Autentikasi**: Laravel Sanctum berbasis Token (untuk SPA Next.js).
-- **Admin Panel**: Filament v3 untuk manajemen seluruh resource (Wisata, Kuliner, Nongkrong, User).
-- **AI Proxy**: `FastApiProxyService` menangani route `/api/v1/recommendation` dan `/api/v1/chatbot/ask` ke microservice AI.
-- **FTS (Full-Text Search)**: Didukung penuh oleh PostgreSQL.
+- **Autentikasi**: Laravel Sanctum berbasis Token.
+- **Admin Panel**: Filament v3 untuk manajemen Wisata, Kuliner, Nongkrong, dan User.
+- **AI Proxy**: `FastApiProxyService` menangani route `/api/v1/recommendation`, `/api/v1/recommendation/planning`, dan `/api/v1/chatbot/ask`.
+- **Integrated History Tracking**: Mencatat otomatis aktivitas 'klik' user pada detail tempat ke AI Engine.
+- **Global Search & FTS**: Pencarian cepat berbasis PostgreSQL Full-Text Search.
+- **Sentiment Analytics**: Ringkasan performa sentimen per tempat dan per wilayah.
 
-## 🛠 Panduan Instalasi (Development)
+## 🛠 Panduan Instalasi
+Lihat file [SETUP.md](SETUP.md) untuk panduan instalasi mendetail.
 
-Pastikan lingkungan Anda memenuhi syarat: **PHP >= 8.2**, **PostgreSQL >= 15**, dan **Composer**.
+## 📋 Struktur Response Standar
+Semua API mengembalikan format JSON yang konsisten:
+- **Success:** `{ "success": true, "message": "...", "data": {...} }`
+- **Not Found:** `{ "success": false, "message": "Data tidak ditemukan.", "data": null }` (Status 200 OK)
+- **Error/Validasi:** `{ "success": false, "message": "...", "errors": {...} }` (Status 422/401/500)
 
-1. **Clone repository:**
-   ```bash
-   git clone https://github.com/your-org/smart-tourism-backend.git
-   cd smart-tourism-backend
-   ```
-2. **Install dependensi:**
-   ```bash
-   composer install
-   ```
-3. **Setup environment:**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-   Atur koneksi database PostgreSQL di `.env`. Pastikan `FASTAPI_BASE_URL` dan `FASTAPI_SECRET_KEY` terkonfigurasi.
-4. **Jalankan migrasi (jika belum menggunakan skema SQL mentah):**
-   ```bash
-   php artisan migrate
-   ```
-5. **Jalankan server pengembangan:**
-   ```bash
-   php artisan serve --port=8000
-   ```
-
-## 📋 Daftar Tugas (TODO) Tim
-
-Repositori ini disiapkan sebagai *skeleton* dengan berbagai penanda `TODO`. Para developer (*Anggi* dan *Vanes*) diharapkan meninjau file [docs/BACKEND_TEMPLATE_TODO.md](docs/BACKEND_TEMPLATE_TODO.md) dan menyelesaikan implementasi pada masing-masing layer (Exception, Controller, Service, dan Repository).
-
-## 🛡️ Standar Kualitas yang Diterapkan
-- Respons API terstandar: `{ "success": boolean, "message": string, "data": array|object|null, "meta": object|null }`.
-- Route Middleware: `ForceJsonResponse`, `SanitizeInput`, dan `LogApiRequest` aktif secara global di API.
-- Rate Limit:
+## 🛡️ Standar Kualitas & Keamanan
+- **Case-Insensitive Filters**: Filter wilayah (Indramayu, Cirebon, dll) dapat menerima input huruf kecil maupun besar.
+- **Unauthorized Handling**: Response 401 yang ramah untuk akses tanpa token.
+- **Rate Limit**:
   - `auth`: 10 req/menit
   - `ai_endpoints`: 20 req/menit
   - `public`: 120 req/menit
