@@ -39,9 +39,18 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('search',           [SearchController::class, 'index'])->name('search');
 
         // Sentimen summary — publik
+        Route::get('sentiment/summary-all',       [SentimentController::class, 'summaryAll'])->name('sentiment.summary_all');
         Route::get('sentiment/summary/{wilayah}', [SentimentController::class, 'summary'])
             ->name('sentiment.summary')
             ->where('wilayah', 'Indramayu|Cirebon|Majalengka|Kuningan');
+        
+        // Detail sentimen per tempat
+        Route::get('sentiment/detail/{kode}', [SentimentController::class, 'show'])->name('sentiment.detail');
+        
+        // Versi path panjang sesuai request user (redundant tapi membantu frontend)
+        Route::get('sentiment/summary/{wilayah}/{tipe}/{kode}', [SentimentController::class, 'show'])
+            ->name('sentiment.summary.detail')
+            ->where(['wilayah' => 'Indramayu|Cirebon|Majalengka|Kuningan', 'tipe' => 'wisata|kuliner|nongkrong']);
     });
 
     // ── AI ENDPOINTS ────────────────────────────────────────────────
@@ -55,8 +64,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // ── AUTHENTICATED USER ──────────────────────────────────────────
     Route::middleware(['auth:sanctum', 'throttle:120,1'])->group(function () {
         // History tracking
-        Route::post('recommendation/history', [RecommendationController::class, 'trackHistory'])
-            ->name('recommendation.history');
+        Route::get('recommendation/history',  [RecommendationController::class, 'getHistory'])->name('recommendation.history.list');
+        Route::post('recommendation/history', [RecommendationController::class, 'trackHistory'])->name('recommendation.history.store');
 
         // Planning wisata (CRUD personal)
         Route::apiResource('planning', PlanningController::class)->names([
@@ -81,11 +90,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::apiResource('kuliner',   KulinerController::class)->except(['index', 'show']);
             Route::apiResource('nongkrong', NongkrongController::class)->except(['index', 'show']);
 
+            Route::post('sentiment/sync-all', [SentimentController::class, 'syncAll'])
+                ->name('sentiment.sync_all');
+
             Route::post('sentiment/sync/{tipe}/{kode}', [SentimentController::class, 'sync'])
                 ->name('sentiment.sync')
                 ->where('tipe', 'wisata|kuliner|nongkrong');
-
-            Route::post('sentiment/predict', [SentimentController::class, 'predict'])
-                ->name('sentiment.predict');
         });
 });

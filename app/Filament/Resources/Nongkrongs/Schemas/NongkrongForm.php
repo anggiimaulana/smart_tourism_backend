@@ -17,22 +17,32 @@ class NongkrongForm
                     ->required()
                     ->default('uuid_generate_v4()'),
                 TextInput::make('kode')
-                    ->required(),
-                TextInput::make('id_wisata_ref'),
+                    ->required()
+                    ->placeholder('Contoh: NNG-IDM-001'),
+                TextInput::make('id_wisata_ref')
+                    ->placeholder('Kode Wisata Referensi (Opsional)'),
                 TextInput::make('nama')
-                    ->required(),
+                    ->required()
+                    ->placeholder('Contoh: Kopi Janji Jiwa'),
                 TextInput::make('wilayah')
-                    ->required(),
-                TextInput::make('kecamatan'),
+                    ->required()
+                    ->placeholder('Contoh: Majalengka'),
+                TextInput::make('kecamatan')
+                    ->placeholder('Contoh: Jatiwangi'),
                 Textarea::make('alamat_lengkap')
                     ->columnSpanFull(),
                 TextInput::make('latitude')
-                    ->numeric(),
+                    ->numeric()
+                    ->placeholder('Contoh: -6.823456'),
                 TextInput::make('longitude')
-                    ->numeric(),
-                TextInput::make('konsep_suasana'),
-                TextInput::make('target_pengunjung'),
-                TextInput::make('cocok_untuk'),
+                    ->numeric()
+                    ->placeholder('Contoh: 108.223456'),
+                TextInput::make('konsep_suasana')
+                    ->placeholder('Contoh: Industrial / Cozy / Outdoor'),
+                TextInput::make('target_pengunjung')
+                    ->placeholder('Contoh: Mahasiswa / Keluarga'),
+                TextInput::make('cocok_untuk')
+                    ->placeholder('Contoh: Nugas / WFC / Nongkrong Santai'),
                 Textarea::make('menu_best_seller')
                     ->columnSpanFull(),
                 TextInput::make('harga_menu_min')

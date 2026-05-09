@@ -16,7 +16,7 @@ class CheckFastApiHealth
         $isHealthy = Cache::remember('fastapi_health', 60, function () {
             try {
                 $response = Http::timeout(3)->get(
-                    config('smart_tourism.fastapi.base_url') . '/health'
+                    config('smart_tourism.fastapi.base_url') . '/'
                 );
                 return $response->successful();
             } catch (\Exception) {

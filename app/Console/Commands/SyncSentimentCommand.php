@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Kuliner;
+use App\Models\Nongkrong;
+use App\Models\Wisata;
 use App\Services\FastApiProxyService;
 use Illuminate\Console\Command;
 
@@ -16,15 +19,33 @@ class SyncSentimentCommand extends Command
 
         $this->info("Memulai sinkronisasi sentimen untuk tipe: {$tipe}");
 
-        // TODO: ambil semua kode dari DB → loop → panggil proxy->post(sync)
-        // Contoh:
-        // $kodes = \App\Models\Wisata::pluck('kode');
-        // foreach ($kodes as $kode) {
-        //     $proxy->post("/api/v1/sentiment/sync/{$tipe}/{$kode}");
-        //     $this->line("  ✓ {$kode}");
-        // }
+        $model = match ($tipe) {
+            'wisata'    => Wisata::class,
+            'kuliner'   => Kuliner::class,
+            'nongkrong' => Nongkrong::class,
+            default     => null,
+        };
 
-        $this->info('Sinkronisasi selesai.');
+        if (! $model) {
+            $this->error("Tipe '{$tipe}' tidak valid.");
+            return Command::FAILURE;
+        }
+
+        $kodes = $model::pluck('kode');
+        $bar = $this->output->createProgressBar(count($kodes));
+        $bar->start();
+
+        foreach ($kodes as $kode) {
+            try {
+                $proxy->post("/api/v1/admin/sentiment/sync/{$tipe}/{$kode}");
+            } catch (\Exception $e) {
+                $this->error("\nError sync {$kode}: " . $e->getMessage());
+            }
+            $bar->advance();
+        }
+
+        $bar->finish();
+        $this->info("\nSinkronisasi {$tipe} selesai.");
         return Command::SUCCESS;
     }
 }

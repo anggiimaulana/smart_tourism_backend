@@ -15,7 +15,8 @@ class WisatasTable
     {
         return $table
             ->columns([
-                TextColumn::make('uid'),
+                TextColumn::make('uid')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kode')
                     ->searchable(),
                 TextColumn::make('nama')
@@ -25,15 +26,19 @@ class WisatasTable
                     ->searchable(),
                 TextColumn::make('latitude')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('longitude')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kategori_utama'),
                 TextColumn::make('sub_kategori')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('jenis_tempat')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('harga_tiket_min')
                     ->numeric()
                     ->sortable(),
@@ -44,43 +49,56 @@ class WisatasTable
                     ->boolean(),
                 TextColumn::make('jam_buka')
                     ->time()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('jam_tutup')
                     ->time()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('hari_libur_operasional')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('estimasi_durasi_jam')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('fasilitas'),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('fasilitas')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('aksesibilitas')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('moda_transportasi')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('rating_google')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('jumlah_ulasan_google')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('gambar'),
+                TextColumn::make('gambar')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('diinput_oleh')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status'),
                 TextColumn::make('sentimen'),
                 TextColumn::make('skor_sentimen')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_ulasan_scraped')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_positif')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_negatif')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -89,7 +107,8 @@ class WisatasTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('fts'),
+                TextColumn::make('fts')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

@@ -12,14 +12,24 @@ use Illuminate\Http\Request;
 
 class WisataController extends BaseApiController
 {
-    public function __construct(private readonly WisataService $wisataService) {}
+    public function __construct(
+        private readonly WisataService $wisataService,
+        private readonly \App\Services\FastApiProxyService $proxy
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
+        // Normalisasi wilayah agar tidak case-sensitive (majalengka -> Majalengka)
+        if ($request->has('wilayah')) {
+            $request->merge([
+                'wilayah' => ucfirst(strtolower($request->wilayah))
+            ]);
+        }
+
         $filters = $request->validate([
             'wilayah'        => 'nullable|string|in:Indramayu,Cirebon,Majalengka,Kuningan',
             'kategori_utama' => 'nullable|string|in:Alam,Buatan,Budaya,Religi,Petualangan,Edukasi,Lainnya',
-            'sentimen'       => 'nullable|string|in:positif,negatif,netral',  // netral ada!
+            'sentimen'       => 'nullable|string|in:positif,negatif,netral',
             'gratis'         => 'nullable|boolean',
             'sort'           => 'nullable|string|in:rating,terbaru,nama',
             'per_page'       => 'nullable|integer|min:1|max:50',
@@ -37,7 +47,20 @@ class WisataController extends BaseApiController
         $wisata = $this->wisataService->findByKode($kode);
 
         if (! $wisata) {
-            return $this->error('Wisata tidak ditemukan.', 404);
+            return $this->success(null, 'Wisata tidak ditemukan.', 200, [], false);
+        }
+
+        if ($user = auth('sanctum')->user()) {
+            try {
+                $this->proxy->post('/api/v1/recommendation/history', [
+                    'user_id'     => (string) $user->id,
+                    'tipe_tempat' => 'wisata',
+                    'tempat_kode' => $kode,
+                    'aksi'        => 'klik',
+                ]);
+            } catch (\Exception $e) {
+                // Silently fail to not break the response
+            }
         }
 
         return $this->success(new WisataResource($wisata));
@@ -54,7 +77,7 @@ class WisataController extends BaseApiController
         $wisata = $this->wisataService->update($kode, $request->validated());
 
         if (! $wisata) {
-            return $this->error('Wisata tidak ditemukan.', 404);
+            return $this->success(null, 'Wisata tidak ditemukan.', 200, [], false);
         }
 
         return $this->success(new WisataResource($wisata), 'Wisata berhasil diperbarui.');
@@ -65,7 +88,7 @@ class WisataController extends BaseApiController
         $deleted = $this->wisataService->delete($kode);
 
         if (! $deleted) {
-            return $this->error('Wisata tidak ditemukan.', 404);
+            return $this->success(null, 'Wisata tidak ditemukan.', 200, [], false);
         }
 
         return $this->success(null, 'Wisata berhasil dihapus.');

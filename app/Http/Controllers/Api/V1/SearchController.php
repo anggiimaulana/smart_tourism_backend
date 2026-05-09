@@ -11,6 +11,13 @@ class SearchController extends BaseApiController
 {
     public function index(Request $request): JsonResponse
     {
+        // Normalisasi wilayah agar tidak case-sensitive
+        if ($request->has('wilayah')) {
+            $request->merge([
+                'wilayah' => ucfirst(strtolower($request->wilayah))
+            ]);
+        }
+
         $request->validate([
             'q'       => 'required|string|min:2|max:100',
             'wilayah' => 'nullable|string|in:Indramayu,Cirebon,Majalengka,Kuningan',
@@ -53,7 +60,9 @@ class SearchController extends BaseApiController
             LIMIT :limit
         ", $bindings);
 
-        return $this->success($results, 'Hasil pencarian.', 200, [
+        $message = count($results) > 0 ? 'Hasil pencarian.' : 'Data tidak ditemukan.';
+        
+        return $this->success($results, $message, 200, [
             'query' => $q,
             'total' => count($results),
         ]);

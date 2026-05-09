@@ -15,11 +15,13 @@ class KulinersTable
     {
         return $table
             ->columns([
-                TextColumn::make('uid'),
+                TextColumn::make('uid')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kode')
                     ->searchable(),
                 TextColumn::make('id_wisata_terdekat')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('nama')
                     ->searchable(),
                 TextColumn::make('wilayah'),
@@ -27,17 +29,22 @@ class KulinersTable
                     ->searchable(),
                 TextColumn::make('latitude')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('longitude')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('jenis_tempat'),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('jenis_tempat')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kategori_menu_utama')
                     ->searchable(),
                 IconColumn::make('makanan_khas_daerah')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('nama_makanan_khas')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('harga_menu_min')
                     ->numeric()
                     ->sortable(),
@@ -46,37 +53,48 @@ class KulinersTable
                     ->sortable(),
                 TextColumn::make('jam_buka')
                     ->time()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('jam_tutup')
                     ->time()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('kapasitas_orang')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('fasilitas'),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('fasilitas')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('sertifikat_halal')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('rating_google')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('jumlah_ulasan_google')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('gambar'),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('gambar')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status'),
                 TextColumn::make('sentimen'),
                 TextColumn::make('skor_sentimen')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_ulasan_scraped')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_positif')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_negatif')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -85,7 +103,8 @@ class KulinersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('fts'),
+                TextColumn::make('fts')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

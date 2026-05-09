@@ -29,8 +29,23 @@ return Application::configure(basePath: dirname(__DIR__))
         // Semua exception dikembalikan sebagai JSON
         $exceptions->render(function (\Throwable $e, $request) {
             if ($request->expectsJson()) {
-                $status  = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
-                $message = app()->environment('production')
+                // Handle Authentication Exception (401)
+                if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Silakan login terlebih dahulu untuk mengakses layanan ini.',
+                        'data'    => null,
+                    ], 401);
+                }
+
+                $status = 500;
+                if ($e instanceof \App\Exceptions\FastApiException || $e instanceof \App\Exceptions\AiServiceException) {
+                    $status = method_exists($e, 'getHttpStatus') ? $e->getHttpStatus() : 502;
+                } elseif (method_exists($e, 'getStatusCode')) {
+                    $status = $e->getStatusCode();
+                }
+
+                $message = app()->environment('production') && !($e instanceof \App\Exceptions\FastApiException || $e instanceof \App\Exceptions\AiServiceException)
                     ? 'Terjadi kesalahan pada server.'
                     : $e->getMessage();
 

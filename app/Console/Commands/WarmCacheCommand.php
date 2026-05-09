@@ -10,24 +10,35 @@ use Illuminate\Console\Command;
 class WarmCacheCommand extends Command
 {
     protected $signature   = 'cache:warm';
-    protected $description = 'Pre-cache data populer untuk performa awal';
+    protected $description = 'Pre-cache data populer untuk setiap wilayah';
 
-    public function handle(
-        WisataService $wisataService,
-        KulinerService $kulinerService,
-        NongkrongService $nongkrongService
-    ): int {
-        $this->info('Memulai warming cache...');
+    public function __construct(
+        private readonly WisataService $wisataService,
+        private readonly KulinerService $kulinerService,
+        private readonly NongkrongService $nongkrongService
+    ) {
+        parent::__construct();
+    }
 
-        // TODO: panggil service->list([]) untuk tiap wilayah agar hasil di-cache
-        foreach (config('smart_tourism.wilayah') as $wilayah) {
-            $wisataService->list(['wilayah' => $wilayah]);
-            $kulinerService->list(['wilayah' => $wilayah]);
-            $nongkrongService->list(['wilayah' => $wilayah]);
-            $this->line("  ✓ Cache untuk wilayah {$wilayah} selesai.");
+    public function handle(): int
+    {
+        $wilayahs = config('smart_tourism.wilayah', []);
+
+        $this->info('Memulai pemanasan cache...');
+
+        foreach ($wilayahs as $wilayah) {
+            $this->line("Pemanasan data untuk wilayah: {$wilayah}");
+
+            $filters = ['wilayah' => $wilayah, 'per_page' => 12];
+
+            $this->wisataService->list($filters);
+            $this->kulinerService->list($filters);
+            $this->nongkrongService->list($filters);
+
+            $this->info("  ✓ {$wilayah} done.");
         }
 
-        $this->info('Cache warming selesai.');
+        $this->info('Pemanasan cache selesai.');
         return Command::SUCCESS;
     }
 }
