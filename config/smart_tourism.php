@@ -16,9 +16,13 @@ return [
     ],
 
     'cache_ttl' => [
-        'wisata_list'   => 3600,    // 1 jam
-        'wisata_detail' => 7200,    // 2 jam
-        'sentiment'     => 86400,   // 24 jam
+        'wisata_list'      => 3600,    // 1 jam
+        'wisata_detail'    => 7200,    // 2 jam
+        'kuliner_list'     => 3600,
+        'kuliner_detail'   => 7200,
+        'nongkrong_list'   => 3600,
+        'nongkrong_detail' => 7200,
+        'sentiment'        => 86400,   // 24 jam
     ],
 
     'pagination' => [

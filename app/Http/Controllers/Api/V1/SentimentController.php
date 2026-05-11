@@ -76,4 +76,5 @@ class SentimentController extends BaseApiController
         $result = $this->service->syncAll();
         return $this->success($result, 'Semua data berhasil disinkronisasi.');
     }
+
 }

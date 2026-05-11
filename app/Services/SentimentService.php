@@ -160,4 +160,5 @@ class SentimentService
             'recent_reviews' => $reviews
         ];
     }
+
 }

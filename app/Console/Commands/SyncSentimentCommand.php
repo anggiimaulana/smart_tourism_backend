@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Kuliner;
 use App\Models\Nongkrong;
 use App\Models\Wisata;
-use App\Services\FastApiProxyService;
 use Illuminate\Console\Command;
 
 class SyncSentimentCommand extends Command
@@ -13,7 +12,7 @@ class SyncSentimentCommand extends Command
     protected $signature   = 'sentiment:sync {tipe=wisata : wisata|kuliner|nongkrong}';
     protected $description = 'Sinkronisasi hasil sentimen dari FastAPI ke database';
 
-    public function handle(FastApiProxyService $proxy): int
+    public function handle(\App\Services\SentimentService $service): int
     {
         $tipe = $this->argument('tipe');
 
@@ -37,7 +36,8 @@ class SyncSentimentCommand extends Command
 
         foreach ($kodes as $kode) {
             try {
-                $proxy->post("/api/v1/admin/sentiment/sync/{$tipe}/{$kode}");
+                // Panggil service untuk sinkronisasi
+                $service->syncSentimen($tipe, $kode);
             } catch (\Exception $e) {
                 $this->error("\nError sync {$kode}: " . $e->getMessage());
             }

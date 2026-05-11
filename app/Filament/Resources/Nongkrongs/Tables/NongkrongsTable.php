@@ -105,7 +105,25 @@ class NongkrongsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\SelectFilter::make('wilayah')
+                    ->options([
+                        'Cirebon' => 'Cirebon',
+                        'Indramayu' => 'Indramayu',
+                        'Majalengka' => 'Majalengka',
+                        'Kuningan' => 'Kuningan',
+                    ]),
+                \Filament\Tables\Filters\SelectFilter::make('sentimen')
+                    ->options([
+                        'positif' => 'Positif',
+                        'negatif' => 'Negatif',
+                        'netral' => 'Netral',
+                    ]),
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'aktif' => 'Aktif',
+                        'nonaktif' => 'Nonaktif',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(),
