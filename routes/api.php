@@ -96,5 +96,6 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::post('sentiment/sync/{tipe}/{kode}', [SentimentController::class, 'sync'])
                 ->name('sentiment.sync')
                 ->where('tipe', 'wisata|kuliner|nongkrong');
+
         });
 });
