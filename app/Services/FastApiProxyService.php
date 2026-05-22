@@ -32,12 +32,9 @@ class FastApiProxyService
             $response->throw();
             return $response->json() ?? [];
         } catch (RequestException $e) {
-            throw new FastApiException(
-                'Gagal menghubungi layanan AI: ' . $e->getMessage(),
-                $e->response?->status() ?? 502
-            );
+            $this->handleRequestException($e, $path);
         } catch (\Exception $e) {
-            throw new FastApiException('Layanan AI tidak merespons.', 503);
+            throw new FastApiException('Layanan AI sedang tidak tersedia. Silakan coba beberapa saat lagi.', 503);
         }
     }
 
@@ -51,12 +48,40 @@ class FastApiProxyService
             $response->throw();
             return $response->json() ?? [];
         } catch (RequestException $e) {
-            throw new FastApiException(
-                'Gagal menghubungi layanan AI: ' . $e->getMessage(),
-                $e->response?->status() ?? 502
-            );
+            $this->handleRequestException($e, $path);
         } catch (\Exception $e) {
-            throw new FastApiException('Layanan AI tidak merespons.', 503);
+            throw new FastApiException('Layanan AI sedang tidak tersedia. Silakan coba beberapa saat lagi.', 503);
         }
+    }
+
+    /**
+     * Handle request exception dengan pesan yang mudah dimengerti.
+     */
+    private function handleRequestException(RequestException $e, string $path): never
+    {
+        $status = $e->response?->status() ?? 502;
+        $body   = $e->response?->json() ?? [];
+
+        // Jika FastAPI return format standar {success, message}, gunakan message-nya
+        if (isset($body['message']) && is_string($body['message'])) {
+            $message = $body['message'];
+        } else {
+            // Pesan default berdasarkan status code
+            $message = match (true) {
+                $status === 422 => 'Data yang dikirim tidak valid. Periksa kembali format request.',
+                $status === 404 => 'Endpoint AI tidak ditemukan. Hubungi administrator.',
+                $status === 401 => 'Autentikasi ke layanan AI gagal.',
+                $status >= 500  => 'Layanan AI mengalami gangguan. Silakan coba beberapa saat lagi.',
+                default         => 'Gagal menghubungi layanan AI.',
+            };
+        }
+
+        \Log::warning("FastAPI Error [{$status}] {$path}", [
+            'status'  => $status,
+            'body'    => $body,
+            'message' => $e->getMessage(),
+        ]);
+
+        throw new FastApiException($message, $status);
     }
 }

@@ -26,28 +26,103 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Semua exception dikembalikan sebagai JSON
+        // Semua exception dikembalikan sebagai JSON yang mudah dimengerti
         $exceptions->render(function (\Throwable $e, $request) {
-            if ($request->expectsJson()) {
-                // Handle Authentication Exception (401)
+            if ($request->expectsJson() || $request->is('api/*')) {
+
+                // 401 — Authentication
                 if ($e instanceof \Illuminate\Auth\AuthenticationException) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Silakan login terlebih dahulu untuk mengakses layanan ini.',
+                        'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.',
                         'data'    => null,
                     ], 401);
                 }
 
-                $status = 500;
-                if ($e instanceof \App\Exceptions\FastApiException || $e instanceof \App\Exceptions\AiServiceException) {
-                    $status = method_exists($e, 'getHttpStatus') ? $e->getHttpStatus() : 502;
-                } elseif (method_exists($e, 'getStatusCode')) {
-                    $status = $e->getStatusCode();
+                // 403 — Authorization
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+                    || $e instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Akses ditolak. Anda tidak memiliki izin untuk mengakses resource ini.',
+                        'data'    => null,
+                    ], 403);
                 }
 
-                $message = app()->environment('production') && !($e instanceof \App\Exceptions\FastApiException || $e instanceof \App\Exceptions\AiServiceException)
-                    ? 'Terjadi kesalahan pada server.'
+                // 404 — Not Found (Model atau Route)
+                if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                    $model = class_basename($e->getModel());
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Data {$model} tidak ditemukan.",
+                        'data'    => null,
+                    ], 404);
+                }
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Endpoint tidak ditemukan. Periksa kembali URL yang diminta.',
+                        'data'    => null,
+                    ], 404);
+                }
+
+                // 405 — Method Not Allowed
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Method HTTP tidak diizinkan untuk endpoint ini.',
+                        'data'    => null,
+                    ], 405);
+                }
+
+                // 422 — Validation Error
+                if ($e instanceof \Illuminate\Validation\ValidationException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data yang dikirim tidak valid. Periksa kembali format request.',
+                        'errors'  => $e->errors(),
+                        'data'    => null,
+                    ], 422);
+                }
+
+                // 429 — Too Many Requests
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Terlalu banyak permintaan. Silakan coba beberapa saat lagi.',
+                        'data'    => null,
+                    ], 429);
+                }
+
+                // Custom Exceptions (FastAPI proxy, AI service)
+                if ($e instanceof \App\Exceptions\FastApiException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal menghubungi layanan AI: ' . $e->getMessage(),
+                        'data'    => null,
+                    ], $e->getHttpStatus());
+                }
+                if ($e instanceof \App\Exceptions\AiServiceException) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Layanan AI sedang tidak tersedia. Silakan coba beberapa saat lagi.',
+                        'data'    => null,
+                    ], $e->getHttpStatus());
+                }
+
+                // 500 — Fallback untuk semua error lainnya
+                $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+                $message = app()->environment('production')
+                    ? 'Terjadi kesalahan pada server. Silakan coba beberapa saat lagi.'
                     : $e->getMessage();
+
+                \Log::error('API Error', [
+                    'url'       => $request->fullUrl(),
+                    'method'    => $request->method(),
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'trace'     => $e->getTraceAsString(),
+                ]);
 
                 return response()->json([
                     'success' => false,
