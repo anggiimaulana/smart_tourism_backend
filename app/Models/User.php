@@ -64,6 +64,12 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
         return $this->password_hash;
     }
 
+    // ── Auth: Tell Laravel the password column name ──────────
+    public function getAuthPasswordName(): string
+    {
+        return 'password_hash';
+    }
+
     // ── Helpers ───────────────────────────────────────────────
     public function isAdmin(): bool
     {

@@ -12,6 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->trustProxies(at: '*');
+
         // Middleware global untuk semua API
         $middleware->api(prepend: [
             \App\Http\Middleware\ForceJsonResponse::class,
