@@ -16,18 +16,23 @@ class ChatbotService
     {
         $sessionToken = $data['session_token'] ?? (string) Str::uuid();
 
-        // Panggil FastAPI
+        // Panggil FastAPI — sertakan X-User-Id header hanya jika kita punya user authenticated
+        $extraHeaders = [];
+        if ($userId) {
+            $extraHeaders['X-User-Id'] = $userId;
+        }
+
         $response = $this->proxy->post('/api/v1/chatbot/ask', [
             'message'       => $data['message'],
             'session_token' => $sessionToken,
             'latitude'      => $data['latitude'] ?? null,
             'longitude'     => $data['longitude'] ?? null,
             'wilayah'       => $data['wilayah'] ?? null,
-        ]);
+        ], $extraHeaders);
 
         // Simpan atau update session di DB Laravel
         $session = ChatbotSession::firstOrNew(['session_token' => $sessionToken]);
-        
+
         $messages = $session->messages ?? [];
         $messages[] = [
             'role'    => 'user',

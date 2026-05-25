@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\FastApiException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Log;
 
 class FastApiProxyService
 {
@@ -14,18 +15,19 @@ class FastApiProxyService
 
     public function __construct()
     {
-        $this->baseUrl        = config('smart_tourism.fastapi.base_url');
-        $this->timeout        = config('smart_tourism.fastapi.timeout', 30);
+        $this->baseUrl        = (string) (config('smart_tourism.fastapi.base_url') ?? 'http://127.0.0.1:8001');
+        $this->timeout        = (int) (config('smart_tourism.fastapi.timeout') ?? 30);
         $this->defaultHeaders = [
             'X-Internal-Key' => config('smart_tourism.fastapi.secret_key'),
             'Accept'         => 'application/json',
         ];
     }
 
-    public function get(string $path, array $query = []): array
+    public function get(string $path, array $query = [], array $extraHeaders = []): array
     {
         try {
-            $response = Http::withHeaders($this->defaultHeaders)
+            $headers = array_merge($this->defaultHeaders, $extraHeaders);
+            $response = Http::withHeaders($headers)
                 ->timeout($this->timeout)
                 ->get($this->baseUrl . $path, $query);
 
@@ -38,10 +40,11 @@ class FastApiProxyService
         }
     }
 
-    public function post(string $path, array $payload = []): array
+    public function post(string $path, array $payload = [], array $extraHeaders = []): array
     {
         try {
-            $response = Http::withHeaders($this->defaultHeaders)
+            $headers = array_merge($this->defaultHeaders, $extraHeaders);
+            $response = Http::withHeaders($headers)
                 ->timeout($this->timeout)
                 ->post($this->baseUrl . $path, $payload);
 
@@ -76,7 +79,7 @@ class FastApiProxyService
             };
         }
 
-        \Log::warning("FastAPI Error [{$status}] {$path}", [
+        Log::warning("FastAPI Error [{$status}] {$path}", [
             'status'  => $status,
             'body'    => $body,
             'message' => $e->getMessage(),

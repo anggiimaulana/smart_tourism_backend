@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\UserPreferences;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -58,5 +59,55 @@ class AuthController extends BaseApiController
 
         $request->user()->update($request->only('nama', 'avatar_url'));
         return $this->success(null, 'Profil berhasil diperbarui.');
+    }
+
+    public function getPreferences(Request $request): JsonResponse
+    {
+        $preferences = $request->user()->preferences;
+
+        return $this->success([
+            'kategori_favorit' => $preferences?->kategori_favorit ?? [],
+            'wilayah_favorit'  => $preferences?->wilayah_favorit ?? [],
+            'budget_min'       => $preferences?->budget_min,
+            'budget_max'       => $preferences?->budget_max,
+            'tipe_wisata'      => $preferences?->tipe_wisata ?? [],
+        ]);
+    }
+
+    public function updatePreferences(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'kategori_favorit'   => 'sometimes|array',
+            'kategori_favorit.*' => 'string|max:100',
+            'wilayah_favorit'    => 'sometimes',
+            'budget_min'         => 'sometimes|nullable|integer|min:0',
+            'budget_max'         => 'sometimes|nullable|integer|min:0',
+            'tipe_wisata'        => 'sometimes|array',
+            'tipe_wisata.*'      => 'string|max:100',
+        ]);
+
+        $wilayahFavorit = $validated['wilayah_favorit'] ?? null;
+        if (is_string($wilayahFavorit)) {
+            $wilayahFavorit = array_values(array_filter(array_map('trim', explode(',', $wilayahFavorit))));
+        }
+
+        $preferences = UserPreferences::updateOrCreate(
+            ['user_id' => $request->user()->id],
+            [
+                'kategori_favorit' => $validated['kategori_favorit'] ?? [],
+                'wilayah_favorit'  => $wilayahFavorit ?? [],
+                'budget_min'       => $validated['budget_min'] ?? null,
+                'budget_max'       => $validated['budget_max'] ?? null,
+                'tipe_wisata'      => $validated['tipe_wisata'] ?? [],
+            ]
+        );
+
+        return $this->success([
+            'kategori_favorit' => $preferences->kategori_favorit ?? [],
+            'wilayah_favorit'  => $preferences->wilayah_favorit ?? [],
+            'budget_min'       => $preferences->budget_min,
+            'budget_max'       => $preferences->budget_max,
+            'tipe_wisata'      => $preferences->tipe_wisata ?? [],
+        ], 'Preferensi berhasil diperbarui.');
     }
 }
