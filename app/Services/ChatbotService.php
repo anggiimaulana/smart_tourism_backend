@@ -41,7 +41,7 @@ class ChatbotService
         ];
         $messages[] = [
             'role'    => 'assistant',
-            'content' => $response['response'] ?? $response['message'] ?? '',
+            'content' => $response['data']['answer'] ?? $response['answer'] ?? $response['message'] ?? '',
             'time'    => now()->toIso8601String()
         ];
 
@@ -56,10 +56,10 @@ class ChatbotService
 
         return [
             'session_token'      => $sessionToken,
-            'answer'             => $response['answer'] ?? $response['response'] ?? $response['message'] ?? '',
-            'wilayah_terdeteksi' => $response['wilayah_terdeteksi'] ?? null,
-            'referensi'          => $response['referensi'] ?? [],
-            'messages_count'     => $response['messages_count'] ?? 0,
+            'answer'             => $response['data']['answer'] ?? $response['answer'] ?? $response['message'] ?? '',
+            'wilayah_terdeteksi' => $response['data']['wilayah_terdeteksi'] ?? $response['wilayah_terdeteksi'] ?? null,
+            'referensi'          => $response['data']['referensi'] ?? $response['referensi'] ?? [],
+            'messages_count'     => $response['data']['messages_count'] ?? $response['messages_count'] ?? 0,
         ];
     }
 
@@ -76,6 +76,6 @@ class ChatbotService
 
         // Jika tidak ada di DB, coba ambil dari FastAPI
         $response = $this->proxy->get("/api/v1/chatbot/history/{$token}");
-        return $response['history'] ?? $response['data'] ?? [];
+        return $response['data']['messages'] ?? $response['history'] ?? $response['data'] ?? [];
     }
 }
