@@ -55,9 +55,11 @@ class ChatbotService
         $session->save();
 
         return [
-            'session_token' => $sessionToken,
-            'response'      => $response['response'] ?? $response['message'] ?? '',
-            'data'          => $response['data'] ?? null
+            'session_token'      => $sessionToken,
+            'answer'             => $response['answer'] ?? $response['response'] ?? $response['message'] ?? '',
+            'wilayah_terdeteksi' => $response['wilayah_terdeteksi'] ?? null,
+            'referensi'          => $response['referensi'] ?? [],
+            'messages_count'     => $response['messages_count'] ?? 0,
         ];
     }
 
