@@ -9,6 +9,7 @@ use App\Models\UserPreferences;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends BaseApiController
 {
@@ -68,7 +69,7 @@ class AuthController extends BaseApiController
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
-            $data['avatar_url'] = url("storage/{$path}");
+            $data['avatar_url'] = Storage::url($path);
         } elseif ($request->filled('avatar_url')) {
             $data['avatar_url'] = $request->avatar_url;
         }
