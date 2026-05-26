@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Nongkrongs\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 
 class NongkrongForm
@@ -66,12 +68,21 @@ class NongkrongForm
                     ->columnSpanFull(),
                 Textarea::make('kontak')
                     ->columnSpanFull(),
-                TextInput::make('gambar'),
+                FileUpload::make('gambar')
+                    ->multiple()
+                    ->image()
+                    ->directory('nongkrongs')
+                    ->columnSpanFull(),
                 Textarea::make('sumber_data')
                     ->columnSpanFull(),
                 Textarea::make('catatan')
                     ->columnSpanFull(),
-                TextInput::make('status')
+                Select::make('status')
+                    ->options([
+                        'aktif' => 'Aktif',
+                        'nonaktif' => 'Nonaktif',
+                        'draft' => 'Draft',
+                    ])
                     ->required()
                     ->default('draft'),
                 TextInput::make('sentimen'),
