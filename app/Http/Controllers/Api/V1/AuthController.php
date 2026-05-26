@@ -9,7 +9,6 @@ use App\Models\UserPreferences;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class AuthController extends BaseApiController
 {
@@ -43,10 +42,10 @@ class AuthController extends BaseApiController
         $user = $request->user();
         return $this->success([
             'id'         => $user->id,
-            'nama'       => $user->nama,            // 'nama' bukan 'name'
+            'nama'       => $user->nama,
             'email'      => $user->email,
             'role'       => $user->role,
-            'avatar_url' => $user->avatar_url,      // 'avatar_url' bukan 'avatar'
+            'avatar_url' => $user->avatar_url ? url("storage/{$user->avatar_url}") : null,
             'is_active'  => $user->is_active,
         ]);
     }
@@ -69,7 +68,7 @@ class AuthController extends BaseApiController
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
-            $data['avatar_url'] = Storage::url($path);
+            $data['avatar_url'] = $path;
         } elseif ($request->filled('avatar_url')) {
             $data['avatar_url'] = $request->avatar_url;
         }
@@ -78,9 +77,10 @@ class AuthController extends BaseApiController
             $request->user()->update($data);
         }
 
+        $user = $request->user()->fresh();
         return $this->success([
-            'nama'       => $request->user()->fresh()->nama,
-            'avatar_url' => $request->user()->fresh()->avatar_url,
+            'nama'       => $user->nama,
+            'avatar_url' => $user->avatar_url ? url("storage/{$user->avatar_url}") : null,
         ], 'Profil berhasil diperbarui.');
     }
 
