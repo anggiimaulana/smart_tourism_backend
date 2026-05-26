@@ -52,13 +52,35 @@ class AuthController extends BaseApiController
 
     public function updateProfile(Request $request): JsonResponse
     {
-        $request->validate([
-            'nama'      => 'sometimes|string|min:2|max:150',
+        $rules = [
+            'nama'       => 'sometimes|string|min:2|max:150',
             'avatar_url' => 'sometimes|url|max:500',
-        ]);
+            'avatar'     => 'sometimes|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ];
 
-        $request->user()->update($request->only('nama', 'avatar_url'));
-        return $this->success(null, 'Profil berhasil diperbarui.');
+        $validated = $request->validate($rules);
+
+        $data = [];
+
+        if ($request->filled('nama')) {
+            $data['nama'] = $request->nama;
+        }
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar_url'] = url("storage/{$path}");
+        } elseif ($request->filled('avatar_url')) {
+            $data['avatar_url'] = $request->avatar_url;
+        }
+
+        if (! empty($data)) {
+            $request->user()->update($data);
+        }
+
+        return $this->success([
+            'nama'       => $request->user()->fresh()->nama,
+            'avatar_url' => $request->user()->fresh()->avatar_url,
+        ], 'Profil berhasil diperbarui.');
     }
 
     public function getPreferences(Request $request): JsonResponse
