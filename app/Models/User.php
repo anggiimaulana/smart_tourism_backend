@@ -12,6 +12,7 @@ use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
@@ -33,7 +34,13 @@ class User extends Authenticatable implements FilamentUser, HasName, HasAvatar
         if (! $this->avatar_url) {
             return null;
         }
-        return url($this->avatar_url);
+        if (str_starts_with($this->avatar_url, 'http://') || str_starts_with($this->avatar_url, 'https://')) {
+            return $this->avatar_url;
+        }
+        if (str_starts_with($this->avatar_url, 'storage/')) {
+            return url($this->avatar_url);
+        }
+        return Storage::url($this->avatar_url);
     }
 
     protected $table    = 'users';
