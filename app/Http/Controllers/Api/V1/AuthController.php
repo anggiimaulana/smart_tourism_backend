@@ -45,7 +45,7 @@ class AuthController extends BaseApiController
             'nama'       => $user->nama,
             'email'      => $user->email,
             'role'       => $user->role,
-            'avatar_url' => $user->avatar_url ? url("storage/{$user->avatar_url}") : null,
+            'avatar_url' => $user->avatar_url ? url($user->avatar_url) : null,
             'is_active'  => $user->is_active,
         ]);
     }
@@ -68,7 +68,7 @@ class AuthController extends BaseApiController
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
-            $data['avatar_url'] = $path;
+            $data['avatar_url'] = "storage/{$path}";
         } elseif ($request->filled('avatar_url')) {
             $data['avatar_url'] = $request->avatar_url;
         }
@@ -80,7 +80,7 @@ class AuthController extends BaseApiController
         $user = $request->user()->fresh();
         return $this->success([
             'nama'       => $user->nama,
-            'avatar_url' => $user->avatar_url ? url("storage/{$user->avatar_url}") : null,
+            'avatar_url' => $user->avatar_url ? url($user->avatar_url) : null,
         ], 'Profil berhasil diperbarui.');
     }
 
