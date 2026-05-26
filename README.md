@@ -47,6 +47,12 @@ Semua API mengembalikan format JSON yang konsisten:
 - **Not Found:** `{ "success": false, "message": "Data tidak ditemukan.", "data": null }` (Status 200 OK)
 - **Error/Validasi:** `{ "success": false, "message": "...", "errors": {...} }` (Status 422/401/500)
 
+### Kontrak FastAPI Chatbot
+
+- Laravel membaca payload chatbot dari field `data` pada respons FastAPI `BaseResponse`.
+- Field di luar `data` tidak dianggap source of truth untuk jawaban chatbot.
+- Jika shape respons berubah, update harus dilakukan di layer FastAPI agar kontraknya tetap konsisten.
+
 ## 🛡️ Standar Kualitas & Keamanan
 
 - **Case-Insensitive Filters**: Filter wilayah (Indramayu, Cirebon, dll) dapat menerima input huruf kecil maupun besar.
