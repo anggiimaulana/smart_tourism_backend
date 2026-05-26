@@ -46,6 +46,8 @@ class UserForm
                 FileUpload::make('avatar_url')
                     ->image()
                     ->directory('avatars')
+                    ->disk('public')
+                    ->visibility('public')
                     ->columnSpanFull()
                     ->label('Avatar')
                     ->dehydrated(fn ($state) => filled($state)),
