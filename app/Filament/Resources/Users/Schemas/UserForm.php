@@ -47,7 +47,8 @@ class UserForm
                     ->image()
                     ->directory('avatars')
                     ->columnSpanFull()
-                    ->label('Avatar'),
+                    ->label('Avatar')
+                    ->dehydrated(fn ($state) => filled($state)),
                 Toggle::make('is_active')
                     ->required()
                     ->default(true)
