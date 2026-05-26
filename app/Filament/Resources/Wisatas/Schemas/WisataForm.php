@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Wisatas\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 
 class WisataForm
@@ -73,11 +75,20 @@ class WisataForm
                     ->columnSpanFull(),
                 Textarea::make('kontak')
                     ->columnSpanFull(),
-                TextInput::make('gambar'),
+                FileUpload::make('gambar')
+                    ->multiple()
+                    ->image()
+                    ->directory('wisatas')
+                    ->columnSpanFull(),
                 Textarea::make('sumber_data')
                     ->columnSpanFull(),
                 TextInput::make('diinput_oleh'),
-                TextInput::make('status')
+                Select::make('status')
+                    ->options([
+                        'aktif' => 'Aktif',
+                        'nonaktif' => 'Nonaktif',
+                        'draft' => 'Draft',
+                    ])
                     ->required()
                     ->default('draft'),
                 TextInput::make('sentimen'),

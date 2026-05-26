@@ -4,8 +4,11 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class UserForm
 {
@@ -21,19 +24,34 @@ class UserForm
                     ->email()
                     ->required()
                     ->placeholder('Contoh: budi@example.com'),
-                Textarea::make('password_hash')
+                TextInput::make('password_hash')
+                    ->label('Ganti Password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->placeholder('Kosongkan jika tidak ingin mengubah password')
+                    ->minLength(8)
+                    ->regex('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/')
+                    ->validationMessages([
+                        'regex' => 'Password harus mengandung minimal 1 huruf besar, 1 huruf kecil, dan 1 angka.',
+                    ]),
+                Select::make('role')
+                    ->options([
+                        'admin' => 'Admin',
+                        'pengunjung' => 'Pengunjung',
+                    ])
                     ->required()
+                    ->default('pengunjung'),
+                FileUpload::make('avatar_url')
+                    ->image()
+                    ->directory('avatars')
                     ->columnSpanFull()
-                    ->placeholder('Masukkan hash password (bcrypt)'),
-                TextInput::make('role')
-                    ->required()
-                    ->default('pengunjung')
-                    ->placeholder('Contoh: admin / pengunjung'),
-                Textarea::make('avatar_url')
-                    ->columnSpanFull()
-                    ->placeholder('Contoh: https://example.com/avatar.jpg'),
+                    ->label('Avatar'),
                 Toggle::make('is_active')
-                    ->required(),
+                    ->required()
+                    ->default(true)
+                    ->hidden(fn (string $context): bool => $context === 'create'),
             ]);
     }
 }
