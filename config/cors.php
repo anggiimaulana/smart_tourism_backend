@@ -27,6 +27,7 @@ return [
         'http://127.0.0.1:8000',
         'http://127.0.0.1:8001',
         'https://smart-tourism-citra.web.id',
+        'https://www.smart-tourism-citra.web.id',
         'https://smart-tourisme-citra.web.id',
         'https://backend.smart-tourism-citra.web.id',
         'https://api.smart-tourism-citra.web.id',
