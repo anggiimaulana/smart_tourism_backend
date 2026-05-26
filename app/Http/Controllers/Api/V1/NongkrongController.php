@@ -48,7 +48,7 @@ class NongkrongController extends BaseApiController
         $nongkrong = $this->nongkrongService->findByKode($kode);
 
         if (! $nongkrong) {
-            return $this->success(null, 'Tempat nongkrong tidak ditemukan.', 200, [], false);
+            return $this->error('Tempat nongkrong tidak ditemukan.', 404);
         }
 
         if ($user = auth('sanctum')->user()) {
@@ -78,7 +78,7 @@ class NongkrongController extends BaseApiController
         $nongkrong = $this->nongkrongService->update($kode, $request->validated());
 
         if (! $nongkrong) {
-            return $this->success(null, 'Tempat nongkrong tidak ditemukan.', 200, [], false);
+            return $this->error('Tempat nongkrong tidak ditemukan.', 404);
         }
 
         return $this->success(new NongkrongResource($nongkrong), 'Tempat nongkrong berhasil diperbarui.');
@@ -89,7 +89,7 @@ class NongkrongController extends BaseApiController
         $deleted = $this->nongkrongService->delete($kode);
 
         if (! $deleted) {
-            return $this->success(null, 'Tempat nongkrong tidak ditemukan.', 200, [], false);
+            return $this->error('Tempat nongkrong tidak ditemukan.', 404);
         }
 
         return $this->success(null, 'Tempat nongkrong berhasil dihapus.');

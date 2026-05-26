@@ -47,7 +47,7 @@ class WisataController extends BaseApiController
         $wisata = $this->wisataService->findByKode($kode);
 
         if (! $wisata) {
-            return $this->success(null, 'Wisata tidak ditemukan.', 200, [], false);
+            return $this->error('Wisata tidak ditemukan.', 404);
         }
 
         if ($user = auth('sanctum')->user()) {
@@ -77,7 +77,7 @@ class WisataController extends BaseApiController
         $wisata = $this->wisataService->update($kode, $request->validated());
 
         if (! $wisata) {
-            return $this->success(null, 'Wisata tidak ditemukan.', 200, [], false);
+            return $this->error('Wisata tidak ditemukan.', 404);
         }
 
         return $this->success(new WisataResource($wisata), 'Wisata berhasil diperbarui.');
@@ -88,7 +88,7 @@ class WisataController extends BaseApiController
         $deleted = $this->wisataService->delete($kode);
 
         if (! $deleted) {
-            return $this->success(null, 'Wisata tidak ditemukan.', 200, [], false);
+            return $this->error('Wisata tidak ditemukan.', 404);
         }
 
         return $this->success(null, 'Wisata berhasil dihapus.');

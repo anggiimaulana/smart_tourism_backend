@@ -62,7 +62,7 @@ class WisataResource extends JsonResource
 
             // Gambar (array URL)
             'gambar'            => $this->gambar ?? [],
-            'gambar_utama'      => $this->gambar[0] ?? null,    // Gambar pertama untuk card
+            'gambar_utama'      => ($this->gambar ?? [])[0] ?? null,
 
             // Sentimen (dari AI)
             'sentimen'          => $this->sentimen,

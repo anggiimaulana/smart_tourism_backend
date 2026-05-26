@@ -47,7 +47,7 @@ class SentimentController extends BaseApiController
         $result = $this->service->getPlaceSummary($kode);
         
         if ($result['summary']['total_ulasan'] === 0) {
-            return $this->success(null, 'Data sentimen tidak ditemukan.', 200, [], false);
+            return $this->error('Data sentimen tidak ditemukan.', 404);
         }
 
         return $this->success($result);

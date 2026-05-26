@@ -46,7 +46,7 @@ class KulinerController extends BaseApiController
         $kuliner = $this->kulinerService->findByKode($kode);
 
         if (! $kuliner) {
-            return $this->success(null, 'Data kuliner tidak ditemukan.', 200, [], false);
+            return $this->error('Data kuliner tidak ditemukan.', 404);
         }
 
         if ($user = auth('sanctum')->user()) {
@@ -76,7 +76,7 @@ class KulinerController extends BaseApiController
         $kuliner = $this->kulinerService->update($kode, $request->validated());
 
         if (! $kuliner) {
-            return $this->success(null, 'Data kuliner tidak ditemukan.', 200, [], false);
+            return $this->error('Data kuliner tidak ditemukan.', 404);
         }
 
         return $this->success(new KulinerResource($kuliner), 'Data kuliner berhasil diperbarui.');
@@ -87,7 +87,7 @@ class KulinerController extends BaseApiController
         $deleted = $this->kulinerService->delete($kode);
 
         if (! $deleted) {
-            return $this->success(null, 'Data kuliner tidak ditemukan.', 200, [], false);
+            return $this->error('Data kuliner tidak ditemukan.', 404);
         }
 
         return $this->success(null, 'Data kuliner berhasil dihapus.');

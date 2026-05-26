@@ -32,19 +32,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Throwable $e, $request) {
             if ($request->expectsJson() || $request->is('api/*')) {
 
-                $corsHeaders = [
-                    'Access-Control-Allow-Origin'  => '*',
-                    'Access-Control-Allow-Headers' => '*',
-                    'Access-Control-Allow-Methods' => '*',
-                ];
-
                 // 401 — Authentication
                 if ($e instanceof \Illuminate\Auth\AuthenticationException) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.',
                         'data'    => null,
-                    ], 401)->withHeaders($corsHeaders);
+                    ], 401);
                 }
 
                 // 403 — Authorization
@@ -54,7 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => 'Akses ditolak. Anda tidak memiliki izin untuk mengakses resource ini.',
                         'data'    => null,
-                    ], 403)->withHeaders($corsHeaders);
+                    ], 403);
                 }
 
                 // 404 — Not Found (Model atau Route)
@@ -64,14 +58,14 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => "Data {$model} tidak ditemukan.",
                         'data'    => null,
-                    ], 404)->withHeaders($corsHeaders);
+                    ], 404);
                 }
                 if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Endpoint tidak ditemukan. Periksa kembali URL yang diminta.',
                         'data'    => null,
-                    ], 404)->withHeaders($corsHeaders);
+                    ], 404);
                 }
 
                 // 405 — Method Not Allowed
@@ -80,7 +74,7 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => 'Method HTTP tidak diizinkan untuk endpoint ini.',
                         'data'    => null,
-                    ], 405)->withHeaders($corsHeaders);
+                    ], 405);
                 }
 
                 // 422 — Validation Error
@@ -99,7 +93,7 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => 'Terlalu banyak permintaan. Silakan coba beberapa saat lagi.',
                         'data'    => null,
-                    ], 429)->withHeaders($corsHeaders);
+                    ], 429);
                 }
 
                 // Custom Exceptions (FastAPI proxy, AI service)
@@ -108,14 +102,14 @@ return Application::configure(basePath: dirname(__DIR__))
                         'success' => false,
                         'message' => 'Gagal menghubungi layanan AI: ' . $e->getMessage(),
                         'data'    => null,
-                    ], $e->getHttpStatus())->withHeaders($corsHeaders);
+                    ], $e->getHttpStatus());
                 }
                 if ($e instanceof \App\Exceptions\AiServiceException) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Layanan AI sedang tidak tersedia. Silakan coba beberapa saat lagi.',
                         'data'    => null,
-                    ], $e->getHttpStatus())->withHeaders($corsHeaders);
+                    ], $e->getHttpStatus());
                 }
 
                 // 500 — Fallback untuk semua error lainnya
@@ -136,7 +130,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'success' => false,
                     'message' => $message,
                     'data'    => null,
-                ], $status)->withHeaders($corsHeaders);
+                ], $status);
             }
         });
     })->create();

@@ -102,7 +102,7 @@ class WisataRepository implements WisataRepositoryInterface
         $wisata->update($data);
         $this->clearCache($kode);
 
-        return $wisata->fresh($this->detailColumns);
+        return $wisata->fresh()->select($this->detailColumns);
     }
 
     public function delete(string $kode): bool
