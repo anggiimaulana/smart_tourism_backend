@@ -23,4 +23,10 @@ class ChatbotController extends BaseApiController
         $result = $this->service->getHistory($token);
         return $this->success($result);
     }
+
+        public function destroy(string $token): JsonResponse
+    {
+        $result = $this->service->clearHistory($token);
+        return $this->success($result['data'] ?? [], $result['message'] ?? 'Berhasil');
+    }
 }
