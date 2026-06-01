@@ -90,6 +90,22 @@ class ChatbotService
     }
 
     /**
+     * Hapus riwayat dari DB Laravel dan FastAPI
+     */
+    public function clearHistory(string $token): array
+    {
+        $session = ChatbotSession::where('session_token', $token)->first();
+
+        if ($session) {
+            $session->messages = [];
+            $session->save();
+        }
+
+        $response = $this->proxy->delete("/api/v1/chatbot/history/{$token}");
+        return $response;
+    }
+
+    /**
      * FastAPI BaseResponse adalah sumber kebenaran; data harus ada.
      */
     private function extractDataPayload(array $response): array

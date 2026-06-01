@@ -16,7 +16,7 @@ class FastApiProxyService
     public function __construct()
     {
         $this->baseUrl        = (string) (config('smart_tourism.fastapi.base_url') ?? 'http://127.0.0.1:8001');
-        $this->timeout        = (int) (config('smart_tourism.fastapi.timeout') ?? 30);
+        $this->timeout        = (int) (config('smart_tourism.fastapi.timeout') ?? 60);
         $this->defaultHeaders = [
             'X-Internal-Key' => config('smart_tourism.fastapi.secret_key'),
             'Accept'         => 'application/json',
@@ -47,6 +47,23 @@ class FastApiProxyService
             $response = Http::withHeaders($headers)
                 ->timeout($this->timeout)
                 ->post($this->baseUrl . $path, $payload);
+
+            $response->throw();
+            return $response->json() ?? [];
+        } catch (RequestException $e) {
+            $this->handleRequestException($e, $path);
+        } catch (\Exception $e) {
+            throw new FastApiException('Layanan AI sedang tidak tersedia. Silakan coba beberapa saat lagi.', 503);
+        }
+    }
+
+    public function delete(string $path, array $extraHeaders = []): array
+    {
+        try {
+            $headers = array_merge($this->defaultHeaders, $extraHeaders);
+            $response = Http::withHeaders($headers)
+                ->timeout($this->timeout)
+                ->delete($this->baseUrl . $path);
 
             $response->throw();
             return $response->json() ?? [];

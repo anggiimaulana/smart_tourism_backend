@@ -54,9 +54,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     });
 
     // ── AI ENDPOINTS ────────────────────────────────────────────────
-    Route::middleware(['throttle:20,1', 'fastapi.health'])->group(function () {
+    Route::middleware(['throttle:120,1', 'fastapi.health'])->group(function () {
         Route::post('chatbot/ask',             [ChatbotController::class, 'ask'])->name('chatbot.ask');
         Route::get('chatbot/history/{token}',  [ChatbotController::class, 'history'])->name('chatbot.history');
+        Route::delete('chatbot/history/{token}', [ChatbotController::class, 'destroy'])->name('chatbot.history.destroy');
         Route::post('recommendation',          [RecommendationController::class, 'index'])->name('recommendation.index');
         Route::post('recommendation/planning', [RecommendationController::class, 'planning'])->name('recommendation.planning');
     });
