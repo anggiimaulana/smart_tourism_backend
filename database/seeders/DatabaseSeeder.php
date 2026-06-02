@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
     // database/seeders/DatabaseSeeder.php
     public function run(): void
     {
-        $this->call([UserSeeder::class]);
+        $this->call([
+            UserSeeder::class,
+            LlmConfigSeeder::class,
+        ]);
     }
 }
