@@ -38,6 +38,14 @@ class AuthService
             return null;
         }
 
+        if ($user->role === 'admin') {
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Akun admin hanya dapat digunakan untuk login di panel admin.',
+                'data' => null
+            ], 403));
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
