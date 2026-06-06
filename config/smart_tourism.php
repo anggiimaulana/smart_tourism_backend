@@ -5,7 +5,7 @@ return [
 
     'fastapi' => [
         'base_url'   => env('FASTAPI_BASE_URL', 'http://localhost:8001'),
-        'timeout'    => env('FASTAPI_TIMEOUT', 30),
+        'timeout'    => env('FASTAPI_TIMEOUT', 150),
         'secret_key' => env('FASTAPI_SECRET_KEY'),
     ],
 
