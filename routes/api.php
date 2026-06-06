@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\V1\ChatbotController;
 use App\Http\Controllers\Api\V1\RecommendationController;
 use App\Http\Controllers\Api\V1\PlanningController;
 use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\FeedbackController;
+use App\Http\Controllers\RegionController;
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
 
@@ -37,6 +39,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('nongkrong/{kode}', [NongkrongController::class, 'show'])->name('nongkrong.show');
 
         Route::get('search',           [SearchController::class, 'index'])->name('search');
+        Route::get('regions',          [RegionController::class, 'index'])->name('regions.index');
+        Route::post('feedback',        [FeedbackController::class, 'store'])->name('feedback.store');
 
         // Sentimen summary — publik
         Route::get('sentiment/summary-all',       [SentimentController::class, 'summaryAll'])->name('sentiment.summary_all');
