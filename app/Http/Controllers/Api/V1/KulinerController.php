@@ -31,7 +31,7 @@ class KulinerController extends BaseApiController
             'jenis'        => 'nullable|string|in:Restoran,Warung,Cafe,Kedai,Food Court,Angkringan,Lainnya',
             'sentimen'     => 'nullable|string|in:positif,negatif,netral',
             'sort'         => 'nullable|string|in:rating,terbaru,nama',
-            'per_page'     => 'nullable|integer|min:1|max:50',
+            'per_page'     => 'nullable|integer|min:1|max:500',
             'q'            => 'nullable|string|max:100',
         ]);
 

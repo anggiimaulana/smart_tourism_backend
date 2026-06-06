@@ -32,7 +32,7 @@ class WisataController extends BaseApiController
             'sentimen'       => 'nullable|string|in:positif,negatif,netral',
             'gratis'         => 'nullable|boolean',
             'sort'           => 'nullable|string|in:rating,terbaru,nama',
-            'per_page'       => 'nullable|integer|min:1|max:50',
+            'per_page'       => 'nullable|integer|min:1|max:500',
             'q'              => 'nullable|string|max:100',
         ]);
 

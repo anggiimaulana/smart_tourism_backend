@@ -51,7 +51,7 @@ class RecommendationController extends BaseApiController
         }
 
         $result = $this->proxy->post('/api/v1/recommendation/planning', $payload);
-        return $this->success($result);
+        return $this->success($result, 'Rencana berhasil dibuat.', 201);
     }
 
     public function trackHistory(Request $request): JsonResponse
@@ -68,7 +68,7 @@ class RecommendationController extends BaseApiController
             'user_id' => (string) $request->user()->id
         ]));
 
-        return $this->success($data, 'Riwayat berhasil disimpan.');
+        return $this->success($data, 'Riwayat berhasil disimpan.', 201);
     }
 
     /**
