@@ -16,7 +16,7 @@ class FastApiProxyService
     public function __construct()
     {
         $this->baseUrl        = (string) (config('smart_tourism.fastapi.base_url') ?? 'http://127.0.0.1:8001');
-        $this->timeout        = (int) (config('smart_tourism.fastapi.timeout') ?? 60);
+        $this->timeout        = (int) (config('smart_tourism.fastapi.timeout') ?? 150);
         $this->defaultHeaders = [
             'X-Internal-Key' => config('smart_tourism.fastapi.secret_key'),
             'Accept'         => 'application/json',
