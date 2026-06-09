@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\RecommendationController;
 use App\Http\Controllers\Api\V1\PlanningController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\FeedbackController;
+use App\Http\Controllers\Api\V1\QuesionerController;
 use App\Http\Controllers\RegionController;
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
@@ -41,6 +42,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('search',           [SearchController::class, 'index'])->name('search');
         Route::get('regions',          [RegionController::class, 'index'])->name('regions.index');
         Route::post('feedback',        [FeedbackController::class, 'store'])->name('feedback.store');
+        Route::get('quesioner',        [QuesionerController::class, 'index'])->name('quesioner.index');
+        Route::post('quesioner',       [QuesionerController::class, 'store'])->name('quesioner.store');
 
         // Sentimen summary — publik
         Route::get('sentiment/summary-all',       [SentimentController::class, 'summaryAll'])->name('sentiment.summary_all');
